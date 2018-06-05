@@ -9,3 +9,8 @@ export async function s3Upload(file) {
 
   return stored.key;
 }
+
+export async function s3Delete(file) {
+  const stored = await Storage.vault.remove(file.filename);
+  return stored.key;
+}

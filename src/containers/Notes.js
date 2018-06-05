@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import { API, Storage } from "aws-amplify";
-import { s3Upload } from "../libs/awsLib";
+import { s3Upload, s3Delete } from "../libs/awsLib";
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./Notes.css";
@@ -97,6 +97,10 @@ export default class Notes extends Component {
     }
   }
 
+  deleteNote() {
+    return API.del("notes", `/notes/${this.props.match.params.id}`);
+  }
+
   handleDelete = async event => {
     event.preventDefault();
 
@@ -109,6 +113,18 @@ export default class Notes extends Component {
     }
 
     this.setState({ isDeleting: true });
+
+    try {
+      if (this.state.note.attachment) {
+        await s3Delete(this.file);
+        this.state.note.attachment = null;
+      }
+      await this.deleteNote();
+      this.props.history.push("/");
+    } catch (e) {
+      alert(e);
+      this.setState({ isDeleting: false });
+    }
   }
 
   render() {
