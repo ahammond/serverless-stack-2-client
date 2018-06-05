@@ -55,7 +55,12 @@ export default class Signup extends Component {
         newUser
       });
     } catch (e) {
-      alert(e.message);
+      if (e.name == 'UsernameExistsException') {
+        const newUser = await Auth.resendSignUp(this.state.email);
+        this.setState({newUser});
+      } else {
+        alert(e.message);
+      }
     }
 
     this.setState({ isLoading: false });
