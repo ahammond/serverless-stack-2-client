@@ -12,6 +12,9 @@
     "react-scripts": "1.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "aws s3 sync build/ s3://ahammond-notes-app-client --delete",
+    "postdeploy": "aws cloudfront create-invalidation --distribution-id EZQW4FZZSR701 --paths '/*'",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
